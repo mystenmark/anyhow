@@ -42,6 +42,7 @@ impl ErrorImpl {
 
         #[cfg(any(std_backtrace, feature = "backtrace"))]
         {
+            use crate::backtrace::Backtrace;
             use crate::backtrace::BacktraceStatus;
             use alloc::string::ToString;
 
@@ -59,6 +60,11 @@ impl ErrorImpl {
                 }
                 backtrace.truncate(backtrace.trim_end().len());
                 write!(f, "{}", backtrace)?;
+
+                let debug_backtrace = Backtrace::capture();
+                write!(f, "\n\n")?;
+                writeln!(f, "Backtrace of debug fmt:")?;
+                write!(f, "{}", debug_backtrace)?;
             }
         }
 
